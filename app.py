@@ -14,10 +14,14 @@ load_dotenv()
 def test():
     st.markdown("Bid")
 
-pages = {
-    "Register NFT": nft_registration,
-    "Test 1": test
-}
+r = Registration()
+r.nft_registration()
+#r.view_balance()
 
-nav_pages = st.sidebar.selectbox("Choose Page", pages.keys())
-pages[nav_pages]()
+#pages = {
+    #"Register NFT": r.nft_registration(),
+    #"Test 1": test
+#}
+
+#nav_pages = st.sidebar.selectbox("Choose Page", pages.keys())
+#pages[nav_pages]()
