@@ -46,10 +46,17 @@ bid = st.number_input("Bid")
 
 #Get art from dict
 #Get art name
+st.markdown("## NFT Name")
+st.write(nft_data[nfts][])
 #Artist name
+st.markdown("## Artist Name")
+st.write(nft_data[nfts][])
 #Get description
+st.markdown("## Description")
+st.write(nft_data[nfts][])
 #Get/write starting bid from dict
-#Write owners address
+st.markdown("## Starting Bid")
+st.write(nft_data[nfts][])
 
 
 
