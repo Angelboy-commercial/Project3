@@ -1,37 +1,50 @@
-pragma solidity ^0.5.0;
-
+pragma solidity 0.6.0;
+import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
 
 contract Auction{
     using SafeMath for uint;
     
     uint256 AuctionTimeLimit;
-    address highest_bidder;
-    uint256 highest_bid;
+    // address payable highest_bidder;
+    // uint256 highest_bid;
     event Bid(address bidder, uint256 amount);
+    uint256 highestBID;
+    mapping(address => uint256) BidToOwner;
 
-    constructor(uint8 AuctionDayLength_, uint256 startingBID) public{
-        AuctionTimeLimit = block.timestamp + AuctionDayLength_ days;
-        highest_bid = startingBID;
+    constructor(uint256 startingBID) public{
+        AuctionTimeLimit = block.timestamp + 3 days;
+        highestBID = startingBID;
+        uint8 AuctionDayLength_;
     }
 
-    function bid(uint256 amount) external payable returns(uint128){
+    function bid(uint256 amount) public payable returns(uint128){
         require(block.timestamp < AuctionTimeLimit);
-        require(msg.value >= amount && amount > highest_bid);
+        require(msg.value >= amount && amount > highestBID);
         
-        highest_bidder.transfer(highest_bid);
-        highest_bid = amount;
-        highest_bidder = msg.sender;
+        BidToOwner[amount] = msg.sender;
+        BidToOwner[msg.sender] = msg.value;
+        highestBID = amount;
+
         
 
-
-
-        event(msg.sender, amount)
-
-    function 
-        
-        
+        emit Bid(msg.sender, amount);        
     }  
+    
 
+
+
+    function CurrentBidder() public view returns (address){
+        return BidToOwner[highestBID];
+    }
+
+    function HighestBid() public view returns(uint256){
+        return highestBID;
+
+    }
+
+     fallback() payable external{
+
+     }
 
 
 
