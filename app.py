@@ -14,14 +14,19 @@ load_dotenv()
 def test():
     st.markdown("Bid")
 
-r = Registration()
-r.nft_registration()
+contract = load_contract("ArtRegistrytest.json")
+w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
+accounts = w3.eth.accounts
+
+r = Registration(contract, w3, accounts)
+#r.view_balance()
 #r.view_balance()
 
-#pages = {
-    #"Register NFT": r.nft_registration(),
-    #"Test 1": test
-#}
+pages = {
+    "Register NFT": r.nft_registration(),
+    "Auction": "add function",
+    "Test 1": test()
+}
 
 #nav_pages = st.sidebar.selectbox("Choose Page", pages.keys())
 #pages[nav_pages]()
