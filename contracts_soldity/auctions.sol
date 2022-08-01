@@ -10,11 +10,13 @@ contract Auctions is ERC721 {
 
     struct Token {
         address creator;
+        address beneficiary;
         string name;
         string description;
     
         bool auctionComplete;
         uint auctionEndTime;
+        uint minimumBid;
         uint highestBid;
 
         address[] bidders;
@@ -22,35 +24,12 @@ contract Auctions is ERC721 {
         mapping(address => uint) balances;
 
         address highestBidder;
-        address beneficiary;
     }
 
     mapping(uint => Token) public tokenCollection;
     event bids(address bidder, uint256 bid);
     
-    modifier ends(uint tokenId) {
-        require(tokenCollection[tokenId].auctionComplete == false);
-
-        if (block.timestamp >= tokenCollection[tokenId].auctionEndTime) {
-            payable(tokenCollection[tokenId].beneficiary).transfer(tokenCollection[tokenId].highestBid);
-            tokenCollection[tokenId].balances[tokenCollection[tokenId].highestBidder] = 0;
-
-            _transfer(tokenCollection[tokenId].creator, tokenCollection[tokenId].highestBidder, tokenId);
-
-            for (uint i = 0; i < tokenCollection[tokenId].bidders.length; i++) {
-                address payable bidder = payable(tokenCollection[tokenId].bidders[i]);
-                bidder.transfer(tokenCollection[tokenId].balances[bidder]);
-                tokenCollection[tokenId].balances[bidder] = 0;
-            }
-
-            tokenCollection[tokenId].auctionComplete = true;
-        }
-
-        require(tokenCollection[tokenId].auctionComplete == false);
-        _;
-    }
-
-    function createToken(string memory name, string memory description, uint startingBid, uint auctionEndTime, address beneficiary, string memory tokenURI) public {
+    function createToken(string memory name, string memory description, uint minimumBid, uint auctionEndTime, address beneficiary, string memory tokenURI) public {
         require(auctionEndTime >= block.timestamp);
 
         uint256 tokenId = totalSupply();
@@ -60,14 +39,40 @@ contract Auctions is ERC721 {
         address[] storage bidders;
         bidders.push(msg.sender);
 
-        tokenCollection[tokenId] = Token(msg.sender, name, description, false, auctionEndTime, startingBid, bidders, msg.sender, beneficiary);
+        tokenCollection[tokenId] = Token(msg.sender, beneficiary, name, description, false, auctionEndTime, minimumBid, 0, bidders, msg.sender);
+    }
+
+    modifier ends(uint tokenId) {
+        require(tokenCollection[tokenId].auctionComplete == false);
+
+        Token storage token = tokenCollection[tokenId];
+
+        if (block.timestamp >= token.auctionEndTime) {
+            payable(token.beneficiary).transfer(token.highestBid);
+            token.balances[token.highestBidder] = 0;
+
+            _transfer(token.creator, token.highestBidder, tokenId);
+
+            for (uint i = 0; i < token.bidders.length; i++) {
+                address payable bidder = payable(token.bidders[i]);
+                bidder.transfer(token.balances[bidder]);
+                token.balances[bidder] = 0;
+            }
+
+            token.auctionComplete = true;
+        }
+
+        require(token.auctionComplete == false);
+        _;
     }
 
     function claimEnd(uint tokenID) ends(tokenID) public {}
 
     function firstBid(address bidder, uint tokenId) public view returns(bool) {
-        for (uint i = 0; i < tokenCollection[tokenId].bidders.length; i++) {
-            if (tokenCollection[tokenId].bidders[i] == bidder) {
+        Token storage token = tokenCollection[tokenId];
+
+        for (uint i = 0; i < token.bidders.length; i++) {
+            if (token.bidders[i] == bidder) {
                 return false;
             }
         }
@@ -76,73 +81,81 @@ contract Auctions is ERC721 {
     }
 
     function updateBid(uint tokenId, uint bid) public payable ends(tokenId) {
+        Token storage token = tokenCollection[tokenId];
+
         if (firstBid(msg.sender, tokenId) == true) {
-            require(bid > 0 && msg.value == bid);
-            tokenCollection[tokenId].bids[msg.sender] = bid;
-            tokenCollection[tokenId].balances[msg.sender] = bid;
-            tokenCollection[tokenId].bidders.push(msg.sender);
+            require(bid > 0 && msg.value == bid && msg.value >= token.minimumBid);
+            token.bids[msg.sender] = bid;
+            token.balances[msg.sender] = bid;
+            token.bidders.push(msg.sender);
         }
 
-        uint senderBalance = tokenCollection[tokenId].balances[msg.sender];
+        uint senderBalance = token.balances[msg.sender];
         uint balanceDifference = (bid - senderBalance);
 
         if (bid >= senderBalance) {
             require(msg.value == balanceDifference);
-            tokenCollection[tokenId].bids[msg.sender] = bid;
-            tokenCollection[tokenId].balances[msg.sender] += balanceDifference;
+            token.bids[msg.sender] = bid;
+            token.balances[msg.sender] += balanceDifference;
         } else {
-            tokenCollection[tokenId].bids[msg.sender] = bid;
+            token.bids[msg.sender] = bid;
         }
 
         uint _highestBid = bid - 1;
-        tokenCollection[tokenId].highestBidder = msg.sender;
-        for (uint i = 0; i < tokenCollection[tokenId].bidders.length; i++) {
-            if (tokenCollection[tokenId].bids[tokenCollection[tokenId].bidders[i]] > _highestBid) {
-                _highestBid = tokenCollection[tokenId].bids[tokenCollection[tokenId].bidders[i]];
-                tokenCollection[tokenId].highestBidder = tokenCollection[tokenId].bidders[i];
+        token.highestBidder = msg.sender;
+        for (uint i = 0; i < token.bidders.length; i++) {
+            if (token.bids[token.bidders[i]] > _highestBid) {
+                _highestBid = token.bids[token.bidders[i]];
+                token.highestBidder = token.bidders[i];
             }
         }
 
-        tokenCollection[tokenId].highestBid = _highestBid;
+        token.highestBid = _highestBid;
 
         emit bids(msg.sender, bid);
     }
 
     function withdrawDifference (uint tokenId) public ends(tokenId) {
-        uint senderBid = tokenCollection[tokenId].bids[msg.sender];
-        uint senderBalance = tokenCollection[tokenId].balances[msg.sender];
+        Token storage token = tokenCollection[tokenId];
+
+        uint senderBid = token.bids[msg.sender];
+        uint senderBalance = token.balances[msg.sender];
     
         require(senderBalance > senderBid);
         uint balanceDifference = senderBalance - senderBid;
 
         msg.sender.transfer(balanceDifference);
-        tokenCollection[tokenId].balances[msg.sender] -= balanceDifference;
+        token.balances[msg.sender] -= balanceDifference;
     }
 
     function exitAuction(uint tokenId) public ends(tokenId) {
-        msg.sender.transfer(tokenCollection[tokenId].balances[msg.sender]);
-        tokenCollection[tokenId].balances[msg.sender] = 0;
-        tokenCollection[tokenId].bids[msg.sender] = 0;
+        Token storage token = tokenCollection[tokenId];
+
+        msg.sender.transfer(token.balances[msg.sender]);
+        token.balances[msg.sender] = 0;
+        token.bids[msg.sender] = 0;
 
         uint _highestBid = 0;
-        for (uint i = 0; i < tokenCollection[tokenId].bidders.length; i++) {
-            if (tokenCollection[tokenId].bids[tokenCollection[tokenId].bidders[i]] > _highestBid) {
-                _highestBid = tokenCollection[tokenId].bids[tokenCollection[tokenId].bidders[i]];
-                tokenCollection[tokenId].highestBidder = tokenCollection[tokenId].bidders[i];
+        for (uint i = 0; i < token.bidders.length; i++) {
+            if (token.bids[token.bidders[i]] > _highestBid) {
+                _highestBid = token.bids[token.bidders[i]];
+                token.highestBidder = token.bidders[i];
             }
         }
 
-        tokenCollection[tokenId].highestBid = _highestBid;
+        token.highestBid = _highestBid;
     }
 
     function viewToken(uint tokenId) public view returns(address, string memory, string memory, bool, uint, uint, address) {
-        return (tokenCollection[tokenId].creator,
-               tokenCollection[tokenId].name,
-               tokenCollection[tokenId].description,
-               tokenCollection[tokenId].auctionComplete,
-               tokenCollection[tokenId].auctionEndTime,
-               tokenCollection[tokenId].highestBid,
-               tokenCollection[tokenId].beneficiary);
+        Token storage token = tokenCollection[tokenId];
+
+        return (token.creator,
+               token.name,
+               token.description,
+               token.auctionComplete,
+               token.auctionEndTime,
+               token.highestBid,
+               token.beneficiary);
     }
 
     function viewHighestBid(uint tokenId) public view returns(uint) {
