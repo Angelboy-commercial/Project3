@@ -35,7 +35,7 @@ contract Auctions is ERC721 {
             payable(tokenCollection[tokenId].beneficiary).transfer(tokenCollection[tokenId].highestBid);
             tokenCollection[tokenId].balances[tokenCollection[tokenId].highestBidder] = 0;
 
-            _transfer(address(this), tokenCollection[tokenId].highestBidder, tokenId);
+            _transfer(tokenCollection[tokenId].creator, tokenCollection[tokenId].highestBidder, tokenId);
 
             for (uint i = 0; i < tokenCollection[tokenId].bidders.length; i++) {
                 address payable bidder = payable(tokenCollection[tokenId].bidders[i]);
@@ -69,10 +69,10 @@ contract Auctions is ERC721 {
         for (uint i = 0; i < tokenCollection[tokenId].bidders.length; i++) {
             if (tokenCollection[tokenId].bidders[i] == bidder) {
                 return false;
-            } else {
-                return true;
             }
         }
+
+        return true;
     }
 
     function updateBid(uint tokenId, uint bid) public payable ends(tokenId) {
@@ -86,7 +86,7 @@ contract Auctions is ERC721 {
         uint senderBalance = tokenCollection[tokenId].balances[msg.sender];
         uint balanceDifference = (bid - senderBalance);
 
-        if (bid >= senderBalance) { //
+        if (bid >= senderBalance) {
             require(msg.value == balanceDifference);
             tokenCollection[tokenId].bids[msg.sender] = bid;
             tokenCollection[tokenId].balances[msg.sender] += balanceDifference;
