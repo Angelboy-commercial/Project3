@@ -103,6 +103,8 @@ contract Auctions is ERC721 {
             }
         }
 
+        tokenCollection[tokenId].highestBid = _highestBid;
+
         emit bids(msg.sender, bid);
     }
 
