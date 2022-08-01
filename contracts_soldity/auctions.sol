@@ -79,29 +79,19 @@ contract Auctions is ERC721 {
         require(block.timestamp < tokenCollection[tokenId].auctionEndTime);
         require(tokenCollection[tokenId].auctionComplete == false);
 
+        tokenCollection[tokenId].bids[msg.sender] = bid;
+
         if (firstBid(msg.sender, tokenId) == true) {
             tokenCollection[tokenId].bidders.push(msg.sender);
-            tokenCollection[tokenId].bids[msg.sender] = bid;
         }
 
-        uint _highestBid = 0;
-        if (msg.sender == tokenCollection[tokenId].highestBidder && bid < tokenCollection[tokenId].highestBid) {
-                tokenCollection[tokenId].bids[msg.sender] = bid;
-                _highestBid = bid;
-            }
-
+        uint _highestBid = bid;
+        tokenCollection[tokenId].highestBidder = msg.sender;
         for (uint i = 0; i < tokenCollection[tokenId].bidders.length; i++) {
             if (tokenCollection[tokenId].bids[tokenCollection[tokenId].bidders[i]] > _highestBid) {
                 _highestBid = tokenCollection[tokenId].bids[tokenCollection[tokenId].bidders[i]];
                 tokenCollection[tokenId].highestBidder = tokenCollection[tokenId].bidders[i];
             }
-        }
-
-        if (bid > _highestBid) {
-            tokenCollection[tokenId].highestBidder = msg.sender;
-            tokenCollection[tokenId].highestBid = bid;
-        } else {
-            tokenCollection[tokenId].highestBid = _highestBid;
         }
 
         uint senderBalance = tokenCollection[tokenId].balances[msg.sender];
