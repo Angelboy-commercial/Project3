@@ -94,7 +94,7 @@ contract Auctions is ERC721 {
             tokenCollection[tokenId].bids[msg.sender] = bid;
         }
 
-        uint _highestBid = bid;
+        uint _highestBid = bid - 1;
         tokenCollection[tokenId].highestBidder = msg.sender;
         for (uint i = 0; i < tokenCollection[tokenId].bidders.length; i++) {
             if (tokenCollection[tokenId].bids[tokenCollection[tokenId].bidders[i]] > _highestBid) {
