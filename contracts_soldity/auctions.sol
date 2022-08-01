@@ -76,13 +76,22 @@ contract Auctions is ERC721 {
     }
 
     function updateBid(uint tokenId, uint bid) public payable ends(tokenId) {
-        require(block.timestamp < tokenCollection[tokenId].auctionEndTime);
-        require(tokenCollection[tokenId].auctionComplete == false);
-
-        tokenCollection[tokenId].bids[msg.sender] = bid;
-
         if (firstBid(msg.sender, tokenId) == true) {
+            require(bid > 0 && msg.value == bid);
+            tokenCollection[tokenId].bids[msg.sender] = bid;
+            tokenCollection[tokenId].balances[msg.sender] = bid;
             tokenCollection[tokenId].bidders.push(msg.sender);
+        }
+
+        uint senderBalance = tokenCollection[tokenId].balances[msg.sender];
+        uint balanceDifference = (bid - senderBalance);
+
+        if (bid >= senderBalance) { //
+            require(msg.value == balanceDifference);
+            tokenCollection[tokenId].bids[msg.sender] = bid;
+            tokenCollection[tokenId].balances[msg.sender] += balanceDifference;
+        } else {
+            tokenCollection[tokenId].bids[msg.sender] = bid;
         }
 
         uint _highestBid = bid;
@@ -92,17 +101,6 @@ contract Auctions is ERC721 {
                 _highestBid = tokenCollection[tokenId].bids[tokenCollection[tokenId].bidders[i]];
                 tokenCollection[tokenId].highestBidder = tokenCollection[tokenId].bidders[i];
             }
-        }
-
-        uint senderBalance = tokenCollection[tokenId].balances[msg.sender];
-        uint balanceDifference = (bid - senderBalance);
-
-        if (bid > senderBalance) {
-            require(msg.value == balanceDifference);
-            tokenCollection[tokenId].bids[msg.sender] = bid;
-            tokenCollection[tokenId].balances[msg.sender] += balanceDifference;
-        } else {
-            tokenCollection[tokenId].bids[msg.sender] = bid;
         }
 
         emit bids(msg.sender, bid);
