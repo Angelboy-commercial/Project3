@@ -44,7 +44,7 @@ contract Auctions is ERC721 {
             }
 
             tokenCollection[tokenId].auctionComplete = true;
-        } else {}
+        }
 
         require(tokenCollection[tokenId].auctionComplete == false);
         _;
