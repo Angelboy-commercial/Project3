@@ -37,17 +37,6 @@ def nft_data():
 def nft_data2():
     r.nft_registration()
     nft_dict2 = {}
-    ipfs_hash, token_json = pin_artwork(name, file)
-    uri = f"ipfs://{ipfs_hash}"
-    tx_hash = contract.functions.registerArtwork(
-    address,
-    name,
-    artist,
-    description,
-    int(starting_bid),
-    uri,
-    token_json['image']
-    ).transact({'from': address, 'gas': 1000000})
     for content in tx_hash:
         json_file = convert_data_to_json(content)
         for index in range(len(json_file)):
