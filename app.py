@@ -41,6 +41,6 @@ if st.button("Register NFT"):
     ipfs_hash, token_json = pin_artwork(name_, file)
     uri = f"ipfs://{ipfs_hash}"
     print(name_, description, starting_bid, uri)
-    tx_hash = contract.functions.createToken(
+    #tx_hash = contract.functions.createToken(
 
-    )
+    #)
