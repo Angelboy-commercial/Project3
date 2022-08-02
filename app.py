@@ -14,7 +14,7 @@ load_dotenv()
 def test():
     st.markdown("Bid")
 
-contract = load_contract("ArtRegistrytest.json")
+contract = load_contract("nft.json")
 w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
 accounts = w3.eth.accounts
 

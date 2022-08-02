@@ -37,6 +37,17 @@ def nft_data():
 def nft_data2():
     r.nft_registration()
     nft_dict2 = {}
+    ipfs_hash, token_json = pin_artwork(name, file)
+    uri = f"ipfs://{ipfs_hash}"
+    tx_hash = contract.functions.registerArtwork(
+    address,
+    name,
+    artist,
+    description,
+    int(starting_bid),
+    uri,
+    token_json['image']
+    ).transact({'from': address, 'gas': 1000000})
     for content in tx_hash:
         json_file = convert_data_to_json(content)
         for index in range(len(json_file)):
@@ -59,18 +70,18 @@ def nft_data2():
                 print('na')
             
     return nft_dict2
-
+#nft_data2()
 
 # Retrieve keys of the nft_dict
 def nfts():
-    dict = nft_data()
+    dict = nft_data2()
     nfts = []
     for keys in dict:
         nft = keys
     return nft.append(nfts)
 # Desired outcome -> nfts = ['NFT1', 'NFT2', 'NFT3']
 
-nft_dict = nft_data()
+nft_dict = nft_data2()
 nft_list = nfts()
 
 # Displays nfts
@@ -79,11 +90,11 @@ def display_nft():
 
     for number in range(len(nft_list)):
         st.image(list[number[5]])
-        st.write("name": list[number][0])
-        st.write("artist" : list[number][1])
-        st.write("address" : list[number][2])
-        st.write("description" : list[number][3])
-        st.write("min_bid" : list[number][4])
+        st.write({"name": list[number][0]})
+        st.write({"artist" : list[number][1]})
+        st.write({"address" : list[number][2]})
+        st.write({"description" : list[number][3]})
+        st.write({"min_bid" : list[number][4]})
 
 
 ########
