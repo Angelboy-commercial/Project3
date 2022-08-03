@@ -37,38 +37,39 @@ if st.button('Record'):
 # create a function that allows for an auction winner to download the mp3
 
 
-files = {}
+mp3_to_TxHash = {}
 
 
-def retreive_file(uri):
-    file = files[uri]
+def add_nft(file,uri, nft_dictionary):
+    nft_dictionary[uri] = file
+    return nft_dictionary
+
+def retreive_file(uri, nft_dictionary):
+    file = nft_dictionary[uri]
     return file
 
+def play_mp3(uri, nft_dictionary):
+    st.audio(retreive_file(uri, nft_dictionary))
+
 def show_image(uri,nft_dictionary):
-    st.image(retreive_file(uri, files))
+    st.image(retreive_file(uri, nft_dictionary))
 
-def play_mp4(uri):
-    st.video(retreive_file(uri, files))
+def play_mp4(uri, nft_dictionary):
+    st.video(retreive_file(uri, nft_dictionary))
 
-def download_file(uri, files):
-    download = retreive_file(uri)
+def download_file(uri, nft_dictionary):
+    download = retreive_file(uri, nft_dictionary)
     st.download_button(download)
 
 def return_dictionary():
     return mp3_to_TxHash
 
-def add_nft(file_name, uri):
-    files[uri] = file_name
-
-def play_mp3(uri):
-    st.audio(files[uri])
-
 
 
 if st.button('play mp3'):
-    add_nft(file_name, uri)
-    play_mp3(uri)
-    st.write(files)
+    mp3_to_TxHash = add_nft(file_name, uri, mp3_to_TxHash)
+    play_mp3(uri, mp3_to_TxHash)
+    st.write(return_dictionary())
 
 
 # fileType = st.selectbox('File type', ['image','mp3', 'mp4'])
