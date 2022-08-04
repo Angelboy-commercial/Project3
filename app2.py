@@ -67,8 +67,8 @@ if pages == "Registry":
 if pages == "Bidding":
 
     bid = st.number_input("Enter your bid")
-    tokenID = "will be retrieved somehow"
     nfts = "some dictionary of nfts"
+    address = st.selectbox("Select Account", options=accounts)
 
     for nft in nfts:
 
@@ -76,13 +76,13 @@ if pages == "Bidding":
             pass
 
         if st.button("Place Bid"):
-            tx_hash = contract.functions.firstBid(tokenID, bid).transact({"from" : accounts, 'gas' : 1000000})
+            tx_hash = contract.functions.firstBid(address, int(bid)).transact({"from" : accounts, 'gas' : 1000000})
             receipt = w3.eth.waitForTransactionReceipt(tx_hash)
             st.write("Transaction receipt mined:")
             st.write(dict(receipt))
 
         if st.button("Withdraw"):
-            tx_hash = contract.functions.withdraw(tokenID)
+            tx_hash = contract.functions.withdraw()
             receipt = w3.eth.waitForTransactionReceipt(tx_hash)
             st.write("Transaction receipt mined:")
             st.write(dict(receipt))
