@@ -52,7 +52,7 @@ if pages == "Registry":
             description,
             int(min_bid),
             int(end_time),
-            address,
+            accounts,
             uri
         ).transact({'from': address, 'gas': 1000000})
         receipt = w3.eth.waitForTransactionReceipt(tx_hash)
@@ -62,28 +62,37 @@ if pages == "Registry":
         st.markdown(f"[Artwork IPFS Gateway Link](https://ipfs.io/ipfs/{ipfs_hash})")
         st.markdown(f"[Artwork IPFS Image Link](https://ipfs.io/ipfs/{token_json['image']})")
 
+
+nfts = "some dictionary of nfts"
+
 if pages == "Bidding":
-    if st.button("Place Bid"):
-        tx_hash = contract.functions.firstBid().transact({"from" : accounts, 'gas' : 1000000})
-        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-        st.write("Transaction receipt mined:")
-        st.write(dict(receipt))
 
-    if st.button("Update Bid"):
-        tx_hash = contract.functions.updateBid()
-        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-        st.write("Transaction receipt mined:")
-        st.write(dict(receipt))
+    for nft in nfts:
 
-    if st.button("Withdraw"):
-        tx_hash = contract.functions.withdrawDifference()
-        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-        st.write("Transaction receipt mined:")
-        st.write(dict(receipt))
-    
-    if st.button("Exit"):
-        tx_hash = contract.functions.exitAuction()
-        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-        st.write("Transaction receipt mined:")
-        st.write(dict(receipt))
-    
+        if st.button("View Token"):
+            pass
+
+        if st.button("Place Bid"):
+            tx_hash = contract.functions.firstBid(accounts, tokenID).transact({"from" : accounts, 'gas' : 1000000})
+            receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+            st.write("Transaction receipt mined:")
+            st.write(dict(receipt))
+
+        if st.button("Update Bid"):
+            tx_hash = contract.functions.updateBid()
+            receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+            st.write("Transaction receipt mined:")
+            st.write(dict(receipt))
+
+        if st.button("Withdraw"):
+            tx_hash = contract.functions.withdrawDifference()
+            receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+            st.write("Transaction receipt mined:")
+            st.write(dict(receipt))
+        
+        if st.button("Exit"):
+            tx_hash = contract.functions.exitAuction()
+            receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+            st.write("Transaction receipt mined:")
+            st.write(dict(receipt))
+        
