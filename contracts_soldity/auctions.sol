@@ -32,7 +32,7 @@ contract Auctions is ERC721 {
         _mint(msg.sender, tokenId);
         _setTokenURI(tokenId, tokenURI);
 
-        tokenCollection[tokenId] = Token(msg.sender, beneficiary, name, description, false, auctionEndTime, 0, msg.sender);
+        tokenCollection[tokenId] = Token(msg.sender, name, description, beneficiary, false, auctionEndTime, 0, msg.sender);
     }
 
     modifier ends(uint tokenId) {
@@ -40,14 +40,14 @@ contract Auctions is ERC721 {
 
         if (block.timestamp >= tokenCollection[tokenId].auctionEndTime) {
             Token storage token = tokenCollection[tokenId];
-            
+
             payable(token.beneficiary).transfer(token.highestBid);
             token.balances[token.highestBidder] = 0;
 
             token.auctionComplete = true;
         }
 
-        require(token.auctionComplete == false);
+        require(tokenCollection[tokenId].auctionComplete == false);
         _;
     }
 
@@ -80,7 +80,7 @@ contract Auctions is ERC721 {
         token.balances[msg.sender] = 0;
     }
 
-    function viewToken(uint tokenId) public view returns(address, string memory, string memory, bool, uint, uint, address) {
+    function viewToken(uint tokenId) public view returns(address, string memory, string memory, address, bool, uint, uint, address) {
         Token storage token = tokenCollection[tokenId];
 
         return (token.creator, token.name, token.description, token.beneficiary, token.auctionComplete, token.auctionEndTime, token.highestBid, token.highestBidder);
@@ -90,4 +90,3 @@ contract Auctions is ERC721 {
         return tokenCollection[tokenId].balances[msg.sender];
     }
 }
-
