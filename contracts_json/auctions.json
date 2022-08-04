@@ -84,6 +84,12 @@
 		"inputs": [
 			{
 				"indexed": false,
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
 				"internalType": "address",
 				"name": "bidder",
 				"type": "address"
@@ -174,19 +180,14 @@
 				"type": "string"
 			},
 			{
-				"internalType": "uint256",
-				"name": "minimumBid",
-				"type": "uint256"
+				"internalType": "address",
+				"name": "beneficiary",
+				"type": "address"
 			},
 			{
 				"internalType": "uint256",
 				"name": "auctionEndTime",
 				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "beneficiary",
-				"type": "address"
 			},
 			{
 				"internalType": "string",
@@ -197,43 +198,6 @@
 		"name": "createToken",
 		"outputs": [],
 		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "exitAuction",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "bidder",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "firstBid",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -309,6 +273,24 @@
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "bid",
+				"type": "uint256"
+			}
+		],
+		"name": "placeBid",
+		"outputs": [],
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -447,11 +429,6 @@
 				"type": "address"
 			},
 			{
-				"internalType": "address",
-				"name": "beneficiary",
-				"type": "address"
-			},
-			{
 				"internalType": "string",
 				"name": "name",
 				"type": "string"
@@ -462,6 +439,11 @@
 				"type": "string"
 			},
 			{
+				"internalType": "address",
+				"name": "beneficiary",
+				"type": "address"
+			},
+			{
 				"internalType": "bool",
 				"name": "auctionComplete",
 				"type": "bool"
@@ -469,11 +451,6 @@
 			{
 				"internalType": "uint256",
 				"name": "auctionEndTime",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "minimumBid",
 				"type": "uint256"
 			},
 			{
@@ -575,65 +552,9 @@
 				"internalType": "uint256",
 				"name": "tokenId",
 				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "bid",
-				"type": "uint256"
-			}
-		],
-		"name": "updateBid",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
 			}
 		],
 		"name": "viewCurrentBalance",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "viewCurrentBid",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "viewHighestBid",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -670,6 +591,11 @@
 				"type": "string"
 			},
 			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
 				"internalType": "bool",
 				"name": "",
 				"type": "bool"
@@ -701,7 +627,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "withdrawDifference",
+		"name": "withdraw",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"

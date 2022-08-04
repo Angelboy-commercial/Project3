@@ -92,3 +92,14 @@ def post_nft():
     st.text_input("Enter the artist name")
     st.text_area("Enter a description of the NFT")
     st.text_input("Starting")
+
+
+token = st.text_input("enter ID")
+if st.button("View Token"):
+    token_attribute = w3.callview("viewtoken")
+    creator = tokenatt[0]
+    beneficaiary
+
+    st.write(creator)
+    if media_file == mp4:
+        st.audio(media_file)
