@@ -44,6 +44,8 @@ contract Auctions is ERC721 {
             payable(token.beneficiary).transfer(token.highestBid);
             token.balances[token.highestBidder] = 0;
 
+            _transfer(token.creator, token.highestBidder, tokenId);
+
             token.auctionComplete = true;
         }
 
