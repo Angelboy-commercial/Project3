@@ -63,9 +63,12 @@ if pages == "Registry":
         st.markdown(f"[Artwork IPFS Image Link](https://ipfs.io/ipfs/{token_json['image']})")
 
 
-nfts = "some dictionary of nfts"
 
 if pages == "Bidding":
+
+    bid = st.number_input("Enter your bid")
+    tokenID = "will be retrieved somehow"
+    nfts = "some dictionary of nfts"
 
     for nft in nfts:
 
@@ -73,25 +76,13 @@ if pages == "Bidding":
             pass
 
         if st.button("Place Bid"):
-            tx_hash = contract.functions.firstBid(accounts, tokenID).transact({"from" : accounts, 'gas' : 1000000})
-            receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-            st.write("Transaction receipt mined:")
-            st.write(dict(receipt))
-
-        if st.button("Update Bid"):
-            tx_hash = contract.functions.updateBid()
+            tx_hash = contract.functions.firstBid(tokenID, bid).transact({"from" : accounts, 'gas' : 1000000})
             receipt = w3.eth.waitForTransactionReceipt(tx_hash)
             st.write("Transaction receipt mined:")
             st.write(dict(receipt))
 
         if st.button("Withdraw"):
-            tx_hash = contract.functions.withdrawDifference()
-            receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-            st.write("Transaction receipt mined:")
-            st.write(dict(receipt))
-        
-        if st.button("Exit"):
-            tx_hash = contract.functions.exitAuction()
+            tx_hash = contract.functions.withdraw(tokenID)
             receipt = w3.eth.waitForTransactionReceipt(tx_hash)
             st.write("Transaction receipt mined:")
             st.write(dict(receipt))
