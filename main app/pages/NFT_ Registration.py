@@ -118,6 +118,7 @@ highest_bid = st.number_input("Highest bid")
 
 # Use the Streamlit `file_uploader` function create the list of digital image file types(jpg, jpeg, or png) that will be uploaded to Pinata.
 file = st.file_uploader("Upload Artwork", type=["jpg", "jpeg", "png", "mp3", "mp4"])
+    
 
 if st.button("Register NFT"):
     ipfs_hash, token_json = pin_artwork(name_, file)
