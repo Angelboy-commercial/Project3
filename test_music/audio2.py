@@ -35,27 +35,25 @@ if st.button('Record'):
 # The same thing for Event details through recoring 
 # create a dictionary from transaction hash to mp3 file?
 # create a function that allows for an auction winner to download the mp3
-
-
 files = {}
+@st.cache(allow_output_mutation=True)
 
 
 def retreive_file(uri):
     file = files[uri]
     return file
 
-def show_image(uri,nft_dictionary):
-    st.image(retreive_file(uri, files))
+def show_image(uri):
+    st.image(retreive_file(uri))
 
 def play_mp4(uri):
-    st.video(retreive_file(uri, files))
+    st.video(retreive_file(uri))
 
-def download_file(uri, files):
+def download_file(uri):
     download = retreive_file(uri)
     st.download_button(download)
 
-def return_dictionary():
-    return mp3_to_TxHash
+
 
 def add_nft(file_name, uri):
     files[uri] = file_name
@@ -68,7 +66,7 @@ def play_mp3(uri):
 if st.button('play mp3'):
     add_nft(file_name, uri)
     play_mp3(uri)
-    st.write(files)
+    st.write(len(files))
 
 
 # fileType = st.selectbox('File type', ['image','mp3', 'mp4'])

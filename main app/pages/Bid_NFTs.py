@@ -92,29 +92,52 @@ def pin_appraisal_report(report_content):
     report_ipfs_hash = pin_json_to_ipfs(json_report)
     return report_ipfs_hash
 
-contract = load_contract("auctions.json")
+contract = load_contract("auctions2.json")
 #w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
 accounts = w3.eth.accounts
 
+nft_database = {
+    "NFT1": ["Kodak Black", "description", "0xf36A6D75C6aFcb463303c12C12EF0Bb243eeF1b2", 16374829124, 3, "https://gateway.pinata.cloud/ipfs/QmT3zaTzsojQC4UuNGCDWgxs4vbcpu5PzYCDdvbVaxauc4/NFT1.png"],
+    "NFT2": ["Kendall Jenner", "description", "0xf36A6D75C6aFcb463303c12C12EF0Bb243eeF1b2", 16374829124, 3, "https://gateway.pinata.cloud/ipfs/QmX2dXq79pzsuWAyi8gbaPYTW18J3CMz8z9SP1EmcpscNd/NFT2.png"]}
 
-bid = st.number_input("Enter your bid")
-nfts = "some dictionary of nfts"
+nfts = ['NFT1', 'NFT2']
+
 address = st.selectbox("Select Account", options=accounts)
+nfts_options = st.selectbox("Select NFTS", options=nfts)
+bid = st.text_input("Enter your bid")
 
-for nft in nfts:
+def get_nft(number):
+    nft_list = list(nft_database.values())
 
-    if st.button("View Token"):
-        pass
+    for number in range(len(nfts)):
+        st.image(nft_list[number][5])
+        st.write("Name: ", nft_list[number][0])
+        st.write("Description: ", nft_list[number][1])
+        st.write("Ethereum Account Address: ", nft_list[number][2])
+        st.write("Auction End Time: ", nft_list[number][3])
+        st.write("Starting Bid: ", nft_list[number][4], "ETH")
+        st.text(" \n")
+
+for value in (range(len(nfts_options))):
+
+    get_nft(value)
 
     if st.button("Place Bid"):
-        tx_hash = contract.functions.placeBid(address, int(bid)).transact({"from" : accounts, 'gas' : 1000000})
+        tx_hash = contract.functions.placeBid(value, int(bid)).transact({"from" : address, 'gas' : 1000000})
         receipt = w3.eth.waitForTransactionReceipt(tx_hash)
         st.write("Transaction receipt mined:")
         st.write(dict(receipt))
 
     if st.button("Withdraw"):
-        tx_hash = contract.functions.withdraw()
+        tx_hash = contract.functions.withdraw(1)
         receipt = w3.eth.waitForTransactionReceipt(tx_hash)
         st.write("Transaction receipt mined:")
         st.write(dict(receipt))
+    
+    if st.button("View Token"):
+        tx_hash = contract.functions.viewToken(1)
+        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+        st.write("Transaction receipt mined:")
+        st.write(dict(receipt))
+
     
