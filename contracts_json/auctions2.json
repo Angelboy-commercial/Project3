@@ -91,17 +91,17 @@
 			{
 				"indexed": false,
 				"internalType": "address",
-				"name": "donor",
+				"name": "bidder",
 				"type": "address"
 			},
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "amount",
+				"name": "bid",
 				"type": "uint256"
 			}
 		],
-		"name": "donations",
+		"name": "bids",
 		"type": "event"
 	},
 	{
@@ -157,6 +157,19 @@
 	{
 		"inputs": [
 			{
+				"internalType": "uint256",
+				"name": "tokenID",
+				"type": "uint256"
+			}
+		],
+		"name": "claimEnd",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "string",
 				"name": "name",
 				"type": "string"
@@ -172,38 +185,22 @@
 				"type": "address"
 			},
 			{
+				"internalType": "uint256",
+				"name": "auctionEndTime",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "startingBid",
+				"type": "uint256"
+			},
+			{
 				"internalType": "string",
 				"name": "tokenURI",
 				"type": "string"
 			}
 		],
 		"name": "createToken",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "donate",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "end",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -281,6 +278,24 @@
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "bid",
+				"type": "uint256"
+			}
+		],
+		"name": "placeBid",
+		"outputs": [],
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -435,17 +450,27 @@
 			},
 			{
 				"internalType": "bool",
-				"name": "eventComplete",
+				"name": "auctionComplete",
 				"type": "bool"
 			},
 			{
 				"internalType": "uint256",
-				"name": "totalDonations",
+				"name": "auctionEndTime",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "startingBid",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "highestBid",
 				"type": "uint256"
 			},
 			{
 				"internalType": "address",
-				"name": "biggestDonor",
+				"name": "highestBidder",
 				"type": "address"
 			}
 		],
@@ -539,6 +564,25 @@
 				"type": "uint256"
 			}
 		],
+		"name": "viewCurrentBalance",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
 		"name": "viewToken",
 		"outputs": [
 			{
@@ -572,12 +616,35 @@
 				"type": "uint256"
 			},
 			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
 				"internalType": "address",
 				"name": "",
 				"type": "address"
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "withdraw",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	}
 ]

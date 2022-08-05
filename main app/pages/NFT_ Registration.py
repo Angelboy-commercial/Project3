@@ -92,7 +92,7 @@ def pin_appraisal_report(report_content):
     report_ipfs_hash = pin_json_to_ipfs(json_report)
     return report_ipfs_hash
 
-contract = load_contract("auctions.json")
+contract = load_contract("auctions2.json")
 #w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
 accounts = w3.eth.accounts
 
@@ -106,14 +106,7 @@ st.markdown("## Registration")
 name_ = st.text_input("Enter the name of the NFT")
 description = st.text_area("Enter a description of the NFT")
 starting_bid = st.text_input("Enter the starting bid")
-#bool
-auction_complete = st.checkbox("Auction Completed")
-if auction_complete:
-    st.write("Auction Completed")
-
-end_time = st.number_input("Auction End Time")
-min_bid = st.number_input("Minimum bid")
-highest_bid = st.number_input("Highest bid")
+end_time = st.text_input("Auction End Time")
 
 
 # Use the Streamlit `file_uploader` function create the list of digital image file types(jpg, jpeg, or png) that will be uploaded to Pinata.
@@ -129,6 +122,7 @@ if st.button("Register NFT"):
         description,
         address,
         int(end_time),
+        int(starting_bid),
         uri
     ).transact({'from': address, 'gas': 1000000})
     receipt = w3.eth.getTransactionReceipt(tx_hash)
@@ -137,3 +131,5 @@ if st.button("Register NFT"):
     st.write("You can view the pinned metadata file with the following IPFS Gateway Link")
     st.markdown(f"[Artwork IPFS Gateway Link](https://ipfs.io/ipfs/{ipfs_hash})")
     st.markdown(f"[Artwork IPFS Image Link](https://ipfs.io/ipfs/{token_json['image']})")
+
+    st.image(f"https://ipfs.io/ipfs/{token_json['image']}")
