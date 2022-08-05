@@ -92,7 +92,7 @@ def pin_appraisal_report(report_content):
     report_ipfs_hash = pin_json_to_ipfs(json_report)
     return report_ipfs_hash
 
-contract = load_contract("auctions2.json")
+contract = load_contract("auctions.json")
 #w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
 accounts = w3.eth.accounts
 
@@ -122,7 +122,6 @@ if st.button("Register NFT"):
         description,
         address,
         int(end_time),
-        int(starting_bid),
         uri
     ).transact({'from': address, 'gas': 1000000})
     receipt = w3.eth.getTransactionReceipt(tx_hash)
