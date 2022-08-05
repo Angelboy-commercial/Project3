@@ -5,6 +5,30 @@ import streamlit as st
 from tkinter import *
 import pygame
 import json
+import psycopg2
+import psycopg2.extras
+import pandas as pd
+
+
+
+conn = psycopg2.connect(
+    host='localhost',
+    dbname='suppliers',
+    user='postgres',
+    password=,
+    port=5432  
+)
+curse = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+insert_event = 'insert into NFTable(nft_id,nft_name,nft_uri,nft_file) values (%s,%s,%s,%s)'
+
+def enter_event(nft_id,nft_name,nft_uri,nft_file):
+    event_confirm = (nft_id,nft_name,nft_uri,nft_file)
+    curse.execute(insert_event, event_confirm)
+    conn.commit()
+    curse.close()
+    conn.close()
+
 
 # creating functions to interact with the NFT is cool ways such as 
 # being able to attach a .wav to an NFT wiht the auctioner explaing the prize
@@ -37,22 +61,23 @@ if st.button('Record'):
 # create a function that allows for an auction winner to download the mp3
 
 
-mp3_to_TxHash = {}
+mp3_to_TxHash = {"Uri":[], "File":[]}
 
-
-def add_nft(file,uri, nft_dictionary):
-    nft_dictionary[uri] = file
-    return nft_dictionary
+st.cache(allow_output_mutation=True)
+def add_nft(file,uri):
+    mp3_to_TxHash['Uri'].append(uri)
+    mp3_to_TxHash['File'].append(file)
+    return mp3_to_TxHash
 
 def retreive_file(uri, nft_dictionary):
     file = nft_dictionary[uri]
     return file
 
-def play_mp3(uri, nft_dictionary):
-    st.audio(retreive_file(uri, nft_dictionary))
+def play_mp3(song):
+    st.audio(song)
 
-def show_image(uri,nft_dictionary):
-    st.image(retreive_file(uri, nft_dictionary))
+def show_image(Nft_id):
+    st.image(Nft_id)
 
 def play_mp4(uri, nft_dictionary):
     st.video(retreive_file(uri, nft_dictionary))
@@ -64,17 +89,28 @@ def download_file(uri, nft_dictionary):
 def return_dictionary():
     return mp3_to_TxHash
 
+def song_query(id):
+        query = f'''select * from NFTable where nft_id = {id}'''
+        nft_db = pd.read_sql_query(query, con = conn)
+        song = nft_db['nft_file'].to_list()
+        play_mp3(song[0])
+
+def image_query(id):
+    query = f'''select * from NFTable where nft_id = {id}'''
+    nft_db = pd.read_sql_query(query, con = conn)
+    image = nft_db['nft_file'].to_list()
+    show_image(image[0])
 
 
-if st.button('play mp3'):
-    mp3_to_TxHash = add_nft(file_name, uri, mp3_to_TxHash)
-    play_mp3(uri, mp3_to_TxHash)
-    st.write(return_dictionary())
 
 
-# fileType = st.selectbox('File type', ['image','mp3', 'mp4'])
+nft_id = st.text_input('Song id')
+if st.button('View mp3 Nft'):
+    song_query(nft_id)
+    
 
-
+if st.button('View Image Nft'):
+    image_query(nft_id)
 
 
 
