@@ -124,3 +124,12 @@ if st.button("Register Crowdfund"):
     st.write("You can view the pinned metadata file with the following IPFS Gateway Link")
     st.markdown(f"[Artwork IPFS Gateway Link](https://ipfs.io/ipfs/{ipfs_hash})")
     st.markdown(f"[Artwork IPFS Image Link](https://ipfs.io/ipfs/{token_json['image']})")
+
+if st.button("End"):
+    pass
+
+if st.button("Donate"):
+    pass
+
+if st.button("View Token"):
+    pass
