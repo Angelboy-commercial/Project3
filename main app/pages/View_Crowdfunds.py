@@ -106,38 +106,30 @@ address = st.selectbox("Select Account", options=accounts)
 st.markdown("---")
 
 
+token_id = st.text_input("Token Id")
 
-
-st.markdown("## Registration")
-name_ = st.text_input("Enter the name of the NFT")
-description = st.text_area("Enter a description of the NFT")
-
-#bool
-
-
-
-beneficiary = st.text_input("Beneficiary address")
-
-
-# Use the Streamlit `file_uploader` function create the list of digital image file types(jpg, jpeg, or png) that will be uploaded to Pinata.
-file = st.file_uploader("Upload Artwork", type=["jpg", "jpeg", "png", "mp3", "mp4"])
-
-if st.button("Register Crowdfund NFT"):
-    ipfs_hash, token_json = pin_artwork(name_, file)
-    uri = f"ipfs://{ipfs_hash}"
-    print(name_, description, uri)
-    tx_hash = contract.functions.createToken(
-        name_,
-        description,
-        beneficiary,
-        uri
-    ).transact({'from': address, 'gas': 1000000})
-    receipt = w3.eth.getTransactionReceipt(tx_hash)
-    st.write("Transaction receipt mined:")
-    st.write(dict(receipt))
 
 
 
 st.write("---")
 
 
+donation = st.text_input("Donation Amount")
+
+if st.button("Donate"):
+    tx_hash = contract.functions.donate(int(token_id)).transact({"from" : address, 'gas' : 3000000, 'value': int(donation)})
+    receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+    st.write("Transaction receipt mined:")
+    st.write(dict(receipt))
+
+
+
+
+st.write("---")
+
+
+if st.button("End Auction"):
+    tx_hash = tx_hash = contract.functions.end(int(token_id)).transact({"from" : address, 'gas' : 3000000})
+    receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+    st.write("Transaction receipt mined:")
+    st.write(dict(receipt))
