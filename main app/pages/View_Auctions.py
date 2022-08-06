@@ -107,37 +107,39 @@ def send_transaction(w3, account, receiver, ether):
 contract = load_contract("auctions.json")
 accounts = w3.eth.accounts
 
-address = st.selectbox("Select Account:", options = accounts)
-nft_id = st.selectbox("Select NFT:", options = [int(0)])
-bid = st.text_input("Enter Bid:")
-
 contract_address2 = os.getenv("SMART_CONTRACT_ADDRESS")
 account = generate_account(w3)
 
-if st.button("Place Bid"):
-<<<<<<< HEAD
-    #tx_hash = contract.functions.placeBid(nfts_options, int(bid)).transact({"to": contract_address2, "from" : '0x7223eA760A13D5DeCb09684C7276fE425A42eC80', 'gas' : 3000000, 'value': bid})
-    #receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-    #ether = st.text_input("Input amount of ether")
-    trans = send_transaction(w3, account, contract_address2, int(bid))
-    st.write("Transaction receipt mined:")
-    st.write(dict(trans))
-    #st.write(dict(trans))
-=======
-    tx_hash = contract.functions.placeBid(nft_id, int(bid)).transact({"from" : address, 'gas' : 3000000, 'value': int(bid)})
-    receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-    st.write("Transaction receipt mined:")
-    st.write(dict(receipt))
->>>>>>> 143529ffa8f9b908df3acb9537e2ad6c403de7c3
+address = st.selectbox("Select Account:", options = accounts)
 
-if st.button("Withdraw"):
-    tx_hash = contract.functions.withdraw(1)
-    receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-    st.write("Transaction receipt mined:")
-    st.write(dict(receipt))
+token_id = st.selectbox("Select Token:", options = [0])
 
 if st.button("View Token"):
-    tx_hash = contract.functions.viewToken(1)
+    token_attributes = contract.functions.viewToken(int(token_id)).call()
+    st.write(f"Token Creator: {token_attributes[0]}")
+    st.write(f"Token Name: {token_attributes[1]}")
+    st.write(f"Token Description: {token_attributes[2]}")
+    st.write(f"Token Beneficiary: {token_attributes[3]}")
+
+    if token_attributes[4] == True:
+        st.write("Auction Complete")
+    else:
+        st.write("Auction Not Complete")
+
+    st.write(f"Auction End Time: {token_attributes[5]}")
+    st.write(f"Highest Bid: {token_attributes[6]}")
+    st.write(f"Highest Bidder: {token_attributes[7]}")
+
+bid = st.text_input("Enter Bid:")
+
+if st.button("Place Bid"):
+    tx_hash = contract.functions.placeBid(token_id, int(bid)).transact({"from" : address, 'gas' : 3000000, 'value': int(bid)})
+    receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+    st.write("Transaction receipt mined:")
+    st.write(dict(receipt))
+
+if st.button("Withdraw"):
+    tx_hash = contract.functions.withdraw(token_id).transact({"from" : address, 'gas' : 3000000})
     receipt = w3.eth.waitForTransactionReceipt(tx_hash)
     st.write("Transaction receipt mined:")
     st.write(dict(receipt))
