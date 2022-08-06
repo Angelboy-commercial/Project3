@@ -55,7 +55,7 @@ contract Auctions is ERC721 {
     function claimEnd(uint tokenID) ends(tokenID) public {}
 
     function placeBid(uint tokenId, uint bid) public payable ends(tokenId) {
-        require(bid > tokenCollection[tokenId].auctionComplete == false, "Auction already ended.");
+        require(tokenCollection[tokenId].auctionComplete == false, "Auction already ended.");
         require(bid > tokenCollection[tokenId].highestBid, "Bids placed must exceed highest bid.");
 
         Auction storage token = tokenCollection[tokenId];

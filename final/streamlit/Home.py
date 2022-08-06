@@ -15,12 +15,17 @@ with st.container():
     NFTs that will be auctioned off to the charity of their choosing. These artists can range from 
     celebrities auctioning time with them or a singer uploading a song. 
     ''')
+
+st.write('---')
+
+with st.container():
+    left, right = st.columns(2)
+    with right:
         st.write('''They way it works is an artists chooses a charity of their choice. That 
     charity then provides an ethreum address that is entered in the contract as the beneficiary
     and everything from that point on works in a tradional auction way. Winning bidder claims the NFT
     (along with the mp3 file to download) and the proceeds get sent to the charity address.
     ''')
-        st.write(f"Auctions Contract Auddress: {os.getenv('AUCTIONS_CONTRACT_ADDRESS')}, Crowdfunding Contract Auddress: {os.getenv('CROWDFUNDING_CONTRACT_ADDRESS')}")
     
     # with right:
         # st.image('', width=300)
