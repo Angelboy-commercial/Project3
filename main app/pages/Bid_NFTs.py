@@ -103,41 +103,41 @@ nft_database = {
 nfts = ['NFT1', 'NFT2']
 
 address = st.selectbox("Select Account", options=accounts)
-nfts_options = st.selectbox("Select NFTS", options=nfts)
+nfts_options = st.selectbox("Select NFTS", options=[0])
 bid = st.text_input("Enter your bid")
 
-def get_nft(number):
-    nft_list = list(nft_database.values())
+# def get_nft(number):
+#     nft_list = list(nft_database.values())
 
-    for number in range(len(nfts)):
-        st.image(nft_list[number][5])
-        st.write("Name: ", nft_list[number][0])
-        st.write("Description: ", nft_list[number][1])
-        st.write("Ethereum Account Address: ", nft_list[number][2])
-        st.write("Auction End Time: ", nft_list[number][3])
-        st.write("Starting Bid: ", nft_list[number][4], "ETH")
-        st.text(" \n")
+#     for number in range(len(nfts)):
+#         st.image(nft_list[number][5])
+#         st.write("Name: ", nft_list[number][0])
+#         st.write("Description: ", nft_list[number][1])
+#         st.write("Ethereum Account Address: ", nft_list[number][2])
+#         st.write("Auction End Time: ", nft_list[number][3])
+#         st.write("Starting Bid: ", nft_list[number][4], "ETH")
+#         st.text(" \n")
 
-for value in (range(len(nfts_options))):
+# for value in (range(len(nfts_options))):
 
-    get_nft(value)
+#     get_nft(value)
 
-    if st.button("Place Bid"):
-        tx_hash = contract.functions.placeBid(value, int(bid)).transact({"from" : address, 'gas' : 1000000})
-        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-        st.write("Transaction receipt mined:")
-        st.write(dict(receipt))
+if st.button("Place Bid"):
+    tx_hash = contract.functions.placeBid(nfts_options, int(bid)).transact({"from" : address, 'gas' : 3000000})
+    receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+    st.write("Transaction receipt mined:")
+    st.write(dict(receipt))
 
-    if st.button("Withdraw"):
-        tx_hash = contract.functions.withdraw(1)
-        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-        st.write("Transaction receipt mined:")
-        st.write(dict(receipt))
-    
-    if st.button("View Token"):
-        tx_hash = contract.functions.viewToken(1)
-        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-        st.write("Transaction receipt mined:")
-        st.write(dict(receipt))
+if st.button("Withdraw"):
+    tx_hash = contract.functions.withdraw(1)
+    receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+    st.write("Transaction receipt mined:")
+    st.write(dict(receipt))
+
+if st.button("View Token"):
+    tx_hash = contract.functions.viewToken(1)
+    receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+    st.write("Transaction receipt mined:")
+    st.write(dict(receipt))
 
     

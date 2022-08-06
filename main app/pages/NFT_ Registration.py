@@ -129,6 +129,6 @@ if st.button("Register NFT"):
     st.write(dict(receipt))
     st.write("You can view the pinned metadata file with the following IPFS Gateway Link")
     st.markdown(f"[Artwork IPFS Gateway Link](https://ipfs.io/ipfs/{ipfs_hash})")
-    st.markdown(f"[Artwork IPFS Image Link](https://ipfs.io/ipfs/{token_json['image']})")
+    #st.markdown(f"[Artwork IPFS Image Link](https://ipfs.io/ipfs/{token_json['image']})")
 
     st.image(f"https://ipfs.io/ipfs/{token_json['image']}")
