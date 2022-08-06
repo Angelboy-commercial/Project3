@@ -59,7 +59,7 @@ st.title('Create Auction')
 creator_address = st.selectbox('Creator Address', options = accounts)
 auction_name = st.text_input('Name')
 description = st.text_area('Description')
-beneficiary_address = st.text_input('Benficiary Address')
+beneficiary_address = st.text_input('Beneficiary Address')
 starting_bid = st.text_input('Starting Bid')
 end_time = st.text_input('Auction End Time')
 
