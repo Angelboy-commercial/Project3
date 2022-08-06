@@ -189,12 +189,12 @@ contract_address2 = os.getenv("SMART_CONTRACT_ADDRESS")
 account = generate_account(w3)
 
 if st.button("Place Bid"):
-    tx_hash = contract.functions.placeBid(nfts_options, int(bid)).transact({"from" : address, 'gas' : 3000000})
-    receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-    # ether = st.text_input("Input amount of ether")
-    # trans = send_transaction(w3, account, contract_address2, int(ether))
+    #tx_hash = contract.functions.placeBid(nfts_options, int(bid)).transact({"to": contract_address2, "from" : '0x7223eA760A13D5DeCb09684C7276fE425A42eC80', 'gas' : 3000000, 'value': bid})
+    #receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+    #ether = st.text_input("Input amount of ether")
+    trans = send_transaction(w3, account, contract_address2, int(bid))
     st.write("Transaction receipt mined:")
-    st.write(dict(receipt))
+    st.write(dict(trans))
     #st.write(dict(trans))
 
 if st.button("Withdraw"):
