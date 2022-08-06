@@ -105,6 +105,13 @@ st.write("Select an account associated with the NFT")
 address = st.selectbox("Select Account", options=accounts)
 st.markdown("---")
 
+
+token_id = st.text_input("Token Id")
+
+
+
+
+st.markdown("---")
 st.markdown("## Registration")
 name_ = st.text_input("Enter the name of the NFT")
 description = st.text_area("Enter a description of the NFT")
@@ -138,33 +145,25 @@ if st.button("Register Crowdfund NFT"):
 
 st.write("---")
 
-if st.button("Donate here"):
-    token_id = st.text_input('Enter the Token Id here')
-    ipfs_hash, token_json = pin_artwork(name_, file)
-    uri = f"ipfs://{ipfs_hash}"
-    print(name_, description, starting_bid, uri)
-    tx_hash = contract.functions.donate(
-        token_id 
-    ).transact({'from': address, 'gas': 1000000})
-    receipt = w3.eth.getTransactionReceipt(tx_hash)
 
+donation = st.text_input("Donation Amount")
 
+if st.button("Donate"):
+    tx_hash = contract.functions.donate(int(token_id)).transact({"from" : address, 'gas' : 3000000, 'value': int(donation)})
+    receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+    st.write("Transaction receipt mined:")
+    st.write(dict(receipt))
 
-if st.button('View Top Donors'):
-    pass
 
 
 
 st.write("---")
 
 
+if st.button("End Auction"):
+    tx_hash = tx_hash = contract.functions.end(int(token_id)).transact({"from" : address, 'gas' : 3000000})
+    receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+    st.write("Transaction receipt mined:")
+    st.write(dict(receipt))
 
-    
-if st.button('View Crowdsale Nfts here'):
-    token_type = st.selectbox('File type', ['mp3', 'image'])
-    token_id = st.text_input('Enter the Token Id here')
-    if token_type == 'mp3':
 
-        audio.song_query(token_id)
-    else:
-        audio.image_query(token_id)
